@@ -2,7 +2,7 @@
 
 #### Assumptions
 
-* _junit4-4.12.jar_ is stored in the directory _/use/share/java/_
+* _junit4-4.12.jar_ is stored in the directory _/usr/share/java/_
 
 #### Problem 1
 
