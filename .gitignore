@@ -1,0 +1,5 @@
+*.zip
+*.class
+*.project
+*.classpath
+**/__MACOSX
