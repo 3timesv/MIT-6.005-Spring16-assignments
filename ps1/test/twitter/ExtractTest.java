@@ -36,7 +36,7 @@ public class ExtractTest {
     private static final Tweet tweet3 = new Tweet(3, "alex", "@alyssa sleeping...", d1);
     private static final Tweet tweet4 = new Tweet(4, "caro", "baby shark dududu.. @alex", d1);
     private static final Tweet tweet5 = new Tweet(5, "cedric", "mama @caro shark dududu..", d1);
-    private static final Tweet tweet6 = new Tweet(6, "tim", "@alice fifi, @bob kl @dani", d1);
+    private static final Tweet tweet6 = new Tweet(6, "tim", "@alice fifi, @bob kl @Alex", d1);
     
     @Test(expected=AssertionError.class)
     public void testAssertionsEnabled() {
@@ -167,13 +167,37 @@ public class ExtractTest {
     // covers tweets.length > 1 and tweets having usernames at start, at end and also somewhere in between
     @Test
     public void testGetMentionedUsersTwoTweetsMentionAllThree() {
-        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet4, tweet6));
-        Set<String> expectedUsers = new HashSet<>();
-        expectedUsers.add("alice");
-        expectedUsers.add("bob");
-        expectedUsers.add("dani");
-        expectedUsers.add("alex");
+        Set<String> trueResult = Extract.getMentionedUsers(Arrays.asList(tweet4, tweet6));
+        // convert the usernames in trueResult to lowercase
+        Set<String> mentionedUsers = new HashSet<String>();
+        for (String user : trueResult) {
+            mentionedUsers.add(user.toLowerCase());
+        }
 
-        assertEquals("expected usernames", expectedUsers, mentionedUsers);
+        // allowing range of variation in the result (i.e result can contain either Alex or alex, but not both)
+        Set<String> expectedResult1 = new HashSet<>();
+        expectedResult1.add("alice");
+        expectedResult1.add("bob");
+        expectedResult1.add("Alex");
+
+        Set<String> expectedResult2 = new HashSet<>();
+        expectedResult2.add("alice");
+        expectedResult2.add("bob");
+        expectedResult2.add("alex");
+
+        // convert the usernames in expectedResult1 to lowercase
+        Set<String> expectedUsers1 = new HashSet<String>();
+        for (String user : expectedResult1) {
+            expectedUsers1.add(user.toLowerCase());
+        }
+
+        // convert the usernames in expectedResult2 to lowercase
+        Set<String> expectedUsers2 = new HashSet<String>();
+        for (String user : expectedResult2) {
+            expectedUsers2.add(user.toLowerCase());
+        }
+
+        assertEquals("expected usernames", expectedUsers1, mentionedUsers);
+        assertEquals("expected usernames", expectedUsers2, mentionedUsers);
     }
 }

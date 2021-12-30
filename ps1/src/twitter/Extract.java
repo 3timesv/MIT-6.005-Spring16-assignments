@@ -94,9 +94,21 @@ public class Extract {
                 } else {
                     endIndex = text.length();
                 }
+                String username = text.substring(startIndex + 1, endIndex);
 
-                // add the username to result
-                mentionedUsers.add(text.substring(startIndex+1, endIndex));
+                // check if mentionedUsers already contains username
+                boolean contains = false;
+                for (String user : mentionedUsers) {
+                    if (user.toLowerCase().equals(username.toLowerCase())) {
+                        contains = true;
+                        break;
+                    }
+                }
+
+                // if mentionedUsers doesnt contain username already, add it
+                if (!contains) {
+                    mentionedUsers.add(text.substring(startIndex+1, endIndex));
+                }
 
                 // if there are no more characters in text, set text as empty string
                 if (endIndex >= text.length()) {
