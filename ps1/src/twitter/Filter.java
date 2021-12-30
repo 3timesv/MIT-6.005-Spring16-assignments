@@ -4,6 +4,7 @@
 package twitter;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Filter consists of methods that filter a list of tweets for those matching a
@@ -27,7 +28,18 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
-        throw new RuntimeException("not implemented");
+        // initialize result list
+        List<Tweet> result = new ArrayList<Tweet>();
+
+        // iterate over the given list of tweets
+        for (int i=0; i < tweets.size(); i++) {
+            // if tweet at index i is written by author == username, add the tweet to result
+            if (tweets.get(i).getAuthor().toLowerCase().equals(username.toLowerCase())) {
+                result.add(tweets.get(i));
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -41,7 +53,18 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
-        throw new RuntimeException("not implemented");
+        // initialize result list
+        List<Tweet> result = new ArrayList<Tweet>();
+
+        // iterate over the given list of tweets
+        for (int i=0; i < tweets.size(); i++) {
+            // if tweet at index i is posted during the timespan, add the tweet to result
+            if (tweets.get(i).getTimestamp().isAfter(timespan.getStart()) && tweets.get(i).getTimestamp().isBefore(timespan.getEnd())) {
+                result.add(tweets.get(i));
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -60,7 +83,43 @@ public class Filter {
      *         same order as in the input list.
      */
     public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
-        throw new RuntimeException("not implemented");
-    }
+        // initialize result list
+        List<Tweet> result = new ArrayList<Tweet>();
 
+        // iterate over the given tweets
+        for (int i=0; i < tweets.size(); i++) {
+            // get current tweet
+            Tweet currentTweet = tweets.get(i);
+
+            // split the tweet into words
+            String[] tweetWords = currentTweet.getText().split(" ");
+
+            boolean contains = false;
+
+            // iterate over the words in the current tweet
+            for (int j=0; j < tweetWords.length; j++) {
+                // get current word
+                String currentWord = tweetWords[j];
+
+                // iterate over the given list of words
+                for (int k=0; k < words.size(); k++) {
+                    // if currentWord is equal to word at index k in given list of words
+                    if (currentWord.toLowerCase().equals(words.get(k).toLowerCase())) {
+                        // set contains to true and break out of the loop
+                        contains = true;
+                        break;
+                    }
+                }
+                // if currentWord is in given list of words, don't continue to compare any further words
+                if (contains) {
+                    break;
+                }
+            }
+            // if the tweet contains atleast one word, add the tweet to result
+            if (contains) {
+                result.add(currentTweet);
+            }
+        }
+        return result;
+    }
 }
