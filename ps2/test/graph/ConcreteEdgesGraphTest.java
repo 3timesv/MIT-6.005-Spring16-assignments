@@ -29,17 +29,50 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
      */
     
     // Testing strategy for ConcreteEdgesGraph.toString()
-    //   TODO
+    //   Graph is empty or non-empty
     
-    // TODO tests for ConcreteEdgesGraph.toString()
+    // ConcreteEdgesGraph.toString() : Graph is empty
+    @Test 
+    public void testConcreteEdgesGraphToStringEmptyGraph() {
+        Graph<String> g = emptyInstance();
+
+        assertEquals("expected message for empty graph", "Graph is empty!", g.toString());
+    }
+
+    // ConcreteEdgesGraph.toString() : Graph is non-empty
+    @Test
+    public void testConcreteEdgesGraphToStringNonEmptyGraph() {
+        Graph<String> g = emptyInstance();
+        g.set("A", "B", 10);
+
+        String expectedResult = "-- Vertices --\nA\nB\n\n-- Edges --\nA --10-> B\n";
+
+        assertEquals("expected String representation of graph", expectedResult, g.toString());
+    }
     
     /*
      * Testing Edge...
      */
     
     // Testing strategy for Edge
-    //   TODO
-    
-    // TODO tests for operations of Edge
-    
+    //  
+    // check the creation of an Edge - Edge(String, String, String)
+    // check source, target and weight of the edge
+    //
+    // check toString() of an Edge
+
+    @Test
+    public void testEdgeCreation() {
+        Edge edge = new Edge("A", "B", 10);
+
+        assertEquals("expected source", "A", edge.getSource());
+        assertEquals("expected target", "B", edge.getTarget());
+        assertEquals("expected weight", 10, edge.getWeight());
+    }
+
+    @Test
+    public void testEdgetoString() {
+        Edge edge = new Edge("A", "B", 10);
+        assertEquals("expected string representation", "A --10-> B", edge.toString());
+    }
 }

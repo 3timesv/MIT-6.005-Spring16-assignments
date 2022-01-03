@@ -6,6 +6,9 @@ package graph;
 import static org.junit.Assert.*;
 
 import java.util.Collections;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -170,7 +173,7 @@ public abstract class GraphInstanceTest {
     // vertices() : graph is empty
     @Test
     public void testVerticesEmptyGraph() {
-        assertEauals("expected empty graph to have no vertices", Collections.emptySet(), emptyInstance().vertices());
+        assertEquals("expected empty graph to have no vertices", Collections.emptySet(), emptyInstance().vertices());
     }
 
     // vertices() : graph is non-empty
@@ -191,10 +194,10 @@ public abstract class GraphInstanceTest {
         Graph<String> g = emptyInstance();
         g.set("A", "B", 10);
 
-        Map<String, Integer> expectedResult = new HaspMap<String, Integer>();
+        Map<String, Integer> expectedResult = new HashMap<String, Integer>();
         Map<String, Integer> trueResult = g.sources("A");
 
-        assertEquals("expected empty map", expectedResult(), trueResult());
+        assertEquals("expected empty map", expectedResult, trueResult);
     }
 
     // sources() : 1 vertex with directed edge to the target
@@ -225,7 +228,7 @@ public abstract class GraphInstanceTest {
 
         Map<String, Integer> trueResult = g.sources("C");
 
-        assertEquals("expected equals maps", expectedResult, trueResult)
+        assertEquals("expected equals maps", expectedResult, trueResult);
     }
 
     // targets() : 0 target vertices with directed edges from the source vertex
