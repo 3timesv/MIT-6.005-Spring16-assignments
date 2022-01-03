@@ -29,7 +29,8 @@ public class ConcreteEdgesGraph implements Graph<String> {
     //
     // Safety from rep exposure:
     //      field 'vertices' is private, final and immutable.
-    //      
+    //      field 'edges' is private and final but mutable.
+    //      There is no method which exposes the edges List to the client.
     
     /**
      * Creates a new instance of ConcreteEdgesGraph.
