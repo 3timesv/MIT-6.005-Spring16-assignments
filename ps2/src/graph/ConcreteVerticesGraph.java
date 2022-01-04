@@ -15,9 +15,9 @@ import java.util.HashSet;
  * 
  * <p>PS2 instructions: you MUST use the provided rep.
  */
-public class ConcreteVerticesGraph implements Graph<String> {
+public class ConcreteVerticesGraph<L> implements Graph<L> {
     
-    private final List<Vertex> vertices = new ArrayList<>();
+    private final List<Vertex<L>> vertices = new ArrayList<>();
     
     // Abstraction function:
     //      Represents the weighted-directed graph, with mutable vertices stored in a List;
@@ -37,16 +37,16 @@ public class ConcreteVerticesGraph implements Graph<String> {
     }
 
     private void checkRep() {
-        Set<String> uniqueValues = new HashSet<>();
+        Set<L> uniqueValues = new HashSet<>();
 
         // iterate over vertices
         for (Vertex v: vertices) {
             // add current vertex's label to the uniqueValues set
-            uniqueValues.add(v.getValue());
+            uniqueValues.add( (L) v.getValue());
 
             // get the labels of vertices that starts/ ends at v
-            Set<String> starts = v.getStarts().keySet();
-            Set<String> ends = v.getEnds().keySet();
+            Set<L> starts = v.getStarts().keySet();
+            Set<L> ends = v.getEnds().keySet();
 
             // v must be in the getEnds()/ getStarts() of vertices that starts/ ends at v
             for (Vertex vert: vertices) {
@@ -59,7 +59,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
             }
 
             // vertices must contain all the vertices of starts
-            for (String s: starts) {
+            for (L s: starts) {
                 boolean found = false;
                 for (Vertex vertex: vertices) {
                     if (vertex.getValue().equals(s)) {
@@ -71,7 +71,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
             }
 
             // vertices must contain all the vertices of ends
-            for (String e: ends) {
+            for (L e: ends) {
                 boolean found = false;
                 for (Vertex vertex: vertices) {
                     if (vertex.getValue().equals(e)) {
@@ -88,7 +88,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
     }
     
     @Override
-    public boolean add(String vertex) {
+    public boolean add(L vertex) {
         // if vertex is already in the graph, return false
         for (Vertex v: vertices) {
             if (v.getValue().equals(vertex)) {
@@ -97,7 +97,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
         }
 
         // create a new vertex and add it to vertices List
-        Vertex newVertex = new Vertex(vertex);
+        Vertex newVertex = new Vertex<L>(vertex);
         vertices.add(newVertex);
 
         checkRep();
@@ -105,7 +105,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
     }
     
     @Override
-    public int set(String source, String target, int weight) {
+    public int set(L source, L target, int weight) {
         assert weight >= 0;
 
         // initialize previous weight to zero
@@ -116,7 +116,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
             for (Vertex tgt: vertices) {
                 // if edge exists,  
                 if (src.getValue().equals(source) && tgt.getValue().equals(target) && src.getStarts().containsKey(target)) {
-                    previousWeight = src.getStarts().get(target);
+                    previousWeight = (int) src.getStarts().get(target);
 
                     // if weight is zero, remove the edge
                     src.removeEdge(target, true);
@@ -156,14 +156,14 @@ public class ConcreteVerticesGraph implements Graph<String> {
 
             // if source does not exist, create a new vertex and connect it to target
             if (!sourceExists) {
-                Vertex sourceVertex = new Vertex(source);
+                Vertex sourceVertex = new Vertex<L>(source);
                 sourceVertex.connectEdge(target, weight, true);
                 vertices.add(sourceVertex);
             }
 
             // if target does not exist, create a new vertex and connect it to source
             if (!targetExists) {
-                Vertex targetVertex = new Vertex(target);
+                Vertex targetVertex = new Vertex<L>(target);
                 targetVertex.connectEdge(source, weight, false);
                 vertices.add(targetVertex);
             }
@@ -174,17 +174,17 @@ public class ConcreteVerticesGraph implements Graph<String> {
     }
     
     @Override
-    public boolean remove(String vertex) {
+    public boolean remove(L vertex) {
 
         // find the vertex in vertices List
         for (Vertex v: vertices) {
             // if vertex is found
             if (v.getValue().equals(vertex)) {
                 // get the labels of vertices that starts at v
-                Set<String> startsAtV = v.getStarts().keySet();
+                Set<L> startsAtV = v.getStarts().keySet();
 
                 // get the labels of vertices that ends at v
-                Set<String> endsAtV = v.getEnds().keySet();
+                Set<L> endsAtV = v.getEnds().keySet();
 
                 // remove the connection of v from the vertices which starts or ends at v
                 for (Vertex vert: vertices) {
@@ -210,22 +210,22 @@ public class ConcreteVerticesGraph implements Graph<String> {
     }
     
     @Override
-    public Set<String> vertices() {
+    public Set<L> vertices() {
         // initialize a set to store the labels of all the vertices
-        Set<String> result = new HashSet<>();
+        Set<L> result = new HashSet<>();
 
         // store the labels of vertices in the set
         for (Vertex v: vertices) {
-            result.add(v.getValue());
+            result.add( (L) v.getValue());
         }
 
         return result;
     }
     
     @Override
-    public Map<String, Integer> sources(String target) {
+    public Map<L, Integer> sources(L target) {
         // initialize Map to store the result
-        Map<String, Integer> result = new HashMap<>();
+        Map<L, Integer> result = new HashMap<>();
 
         // find the target vertex in vertices List
         for (Vertex v: vertices) {
@@ -239,9 +239,9 @@ public class ConcreteVerticesGraph implements Graph<String> {
     }
     
     @Override
-    public Map<String, Integer> targets(String source) {
+    public Map<L, Integer> targets(L source) {
         // initialize Map to store the result
-        Map<String, Integer> result = new HashMap<>();
+        Map<L, Integer> result = new HashMap<>();
 
         // find the source vertex in the vertices List
         for (Vertex v: vertices) {
@@ -277,12 +277,12 @@ public class ConcreteVerticesGraph implements Graph<String> {
  * <p>PS2 instructions: the specification and implementation of this class is
  * up to you.
  */
-class Vertex {
+class Vertex<L> {
     
     // fields
-    private String value;
-    private Map<String, Integer> starts;
-    private Map<String, Integer> ends;
+    private L value;
+    private Map<L, Integer> starts;
+    private Map<L, Integer> ends;
 
     
     // Abstraction function:
@@ -290,7 +290,6 @@ class Vertex {
     //   
     // Representation invariant:
     //      values of starts and ends map are > 0 (i.e positive weights)
-    //      value of vertex cannot be empty string 
     //      no edge can connect vertex to itself i.e !starts.containsKey(value) && !ends.containsKey(value)
     //      
     // Safety from rep exposure:
@@ -301,7 +300,7 @@ class Vertex {
      *
      * @param value value of the vertex
      */
-    public Vertex(String value) {
+    public Vertex(L value) {
         this.value = value;
 
         // initialize empty Maps for starts and ends edges
@@ -325,9 +324,6 @@ class Vertex {
             assert (int) edge.getValue() > 0;
         }
 
-        // value of current vertex cannot be an empty String
-        assert !value.equals("");
-
         // no edge can connect the vertex to itself
         assert !starts.containsKey(value) && !ends.containsKey(value);
     }
@@ -342,7 +338,7 @@ class Vertex {
      * 
      * @return false if the edge is already connected to current vertex, true otherwise.
      */
-    public boolean connectEdge(String value, Integer weight, boolean isStart) {
+    public boolean connectEdge(L value, Integer weight, boolean isStart) {
         assert weight > 0;
 
         // if such an edge already exists, return false
@@ -370,7 +366,7 @@ class Vertex {
      *
      * @return false if the edge is does not exist, true otherwise.
      */
-    public boolean removeEdge(String value, boolean isStart) {
+    public boolean removeEdge(L value, boolean isStart) {
         // if such an edge does not exist, return false
         if (isStart && (!starts.containsKey(value)) || (!isStart) && (!ends.containsKey(value))) {
             return false;
@@ -390,7 +386,7 @@ class Vertex {
     /**
      * @return value of the vertex.
      */
-    public String getValue() {
+    public L getValue() {
         return value;
     }
 
@@ -399,7 +395,7 @@ class Vertex {
      *
      * @param value new value of current vertex.
      */
-    public void setValue(String value) {
+    public void setValue(L value) {
         this.value = value;
         checkRep();
     }
@@ -407,14 +403,14 @@ class Vertex {
     /**
      * @return edges that starts from the current vertex.
      */
-    public Map<String, Integer> getStarts() {
+    public Map<L, Integer> getStarts() {
         return starts;
     }
 
     /**
      * @return edges that ends at the current vertex.
      */
-    public Map<String, Integer> getEnds() {
+    public Map<L, Integer> getEnds() {
         return ends;
     }
     
