@@ -6,7 +6,9 @@ package graph;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
+import java.util.HashSet;
 
 /**
  * An implementation of Graph.
@@ -18,47 +20,258 @@ public class ConcreteVerticesGraph implements Graph<String> {
     private final List<Vertex> vertices = new ArrayList<>();
     
     // Abstraction function:
-    //   TODO
+    //      Represents the weighted-directed graph, with mutable vertices stored in a List;
+    //
     // Representation invariant:
-    //   TODO
+    //      - All vertices in the vertices List are unique.
+    //      - if there is a vertex V in the vertices List, and consider another two vertices S and E
+    //          such that V.getStarts() contains S and V.getEnds() contains E
+    //          * then S.getEnds() must contain V and E.getStarts() must contain V
+    //          * vertices List must contain S and E
+    //
     // Safety from rep exposure:
-    //   TODO
+    //      field is private.
+    //      vertices is mutable but there is no method which shares the vertices List with clients.
     
-    // TODO constructor
-    
-    // TODO checkRep
-    
-    @Override public boolean add(String vertex) {
-        throw new RuntimeException("not implemented");
+    public ConcreteVerticesGraph() {
+    }
+
+    private void checkRep() {
+        Set<String> uniqueValues = new HashSet<>();
+
+        // iterate over vertices
+        for (Vertex v: vertices) {
+            // add current vertex's label to the uniqueValues set
+            uniqueValues.add(v.getValue());
+
+            // get the labels of vertices that starts/ ends at v
+            Set<String> starts = v.getStarts().keySet();
+            Set<String> ends = v.getEnds().keySet();
+
+            // v must be in the getEnds()/ getStarts() of vertices that starts/ ends at v
+            for (Vertex vert: vertices) {
+                if (starts.contains(vert.getValue())) {
+                    assert vert.getEnds().containsKey(v.getValue());
+                }
+                if (ends.contains(vert.getValue())) {
+                    assert vert.getStarts().containsKey(v.getValue());
+                }
+            }
+
+            // vertices must contain all the vertices of starts
+            for (String s: starts) {
+                boolean found = false;
+                for (Vertex vertex: vertices) {
+                    if (vertex.getValue().equals(s)) {
+                        found = true;
+                        break;
+                    }
+                }
+                assert found;
+            }
+
+            // vertices must contain all the vertices of ends
+            for (String e: ends) {
+                boolean found = false;
+                for (Vertex vertex: vertices) {
+                    if (vertex.getValue().equals(e)) {
+                        found = true;
+                        break;
+                    }
+                }
+                assert found;
+            }
+        }
+
+        // vertices must are unique
+        assert vertices.size() == uniqueValues.size();
     }
     
-    @Override public int set(String source, String target, int weight) {
-        throw new RuntimeException("not implemented");
+    @Override
+    public boolean add(String vertex) {
+        // if vertex is already in the graph, return false
+        for (Vertex v: vertices) {
+            if (v.getValue().equals(vertex)) {
+                return false;
+            }
+        }
+
+        // create a new vertex and add it to vertices List
+        Vertex newVertex = new Vertex(vertex);
+        vertices.add(newVertex);
+
+        checkRep();
+        return true;
     }
     
-    @Override public boolean remove(String vertex) {
-        throw new RuntimeException("not implemented");
+    @Override
+    public int set(String source, String target, int weight) {
+        assert weight >= 0;
+
+        // initialize previous weight to zero
+        int previousWeight = 0;
+
+        // check if edge already exists
+        for (Vertex src: vertices) {
+            for (Vertex tgt: vertices) {
+                // if edge exists,  
+                if (src.getValue().equals(source) && tgt.getValue().equals(target) && src.getStarts().containsKey(target)) {
+                    previousWeight = src.getStarts().get(target);
+
+                    // if weight is zero, remove the edge
+                    src.removeEdge(target, true);
+                    tgt.removeEdge(source, false);
+
+                    // if weight is nonzero, update the weights
+                    if (weight != 0) {
+                        src.connectEdge(target, weight, true);
+                        tgt.connectEdge(source, weight, false);
+                    }
+
+                    checkRep();
+                    return previousWeight;
+                }
+            }
+        }
+
+        // if edge does not exists and weight is nonzero, add the edge
+        if (weight != 0) {
+            boolean sourceExists = false;
+            boolean targetExists = false;
+
+            // if source and/or target already exists in the graph, connect the edge
+            for (Vertex v: vertices) {
+                // if source exists, connect it to target
+                if (v.getValue().equals(source)) {
+                    sourceExists = true;
+                    v.connectEdge(target, weight, true);
+                }
+
+                // if target exists, connect it to source
+                if (v.getValue().equals(target)) {
+                    targetExists = true;
+                    v.connectEdge(source, weight, false);
+                }
+            }
+
+            // if source does not exist, create a new vertex and connect it to target
+            if (!sourceExists) {
+                Vertex sourceVertex = new Vertex(source);
+                sourceVertex.connectEdge(target, weight, true);
+                vertices.add(sourceVertex);
+            }
+
+            // if target does not exist, create a new vertex and connect it to source
+            if (!targetExists) {
+                Vertex targetVertex = new Vertex(target);
+                targetVertex.connectEdge(source, weight, false);
+                vertices.add(targetVertex);
+            }
+        }
+
+        checkRep();
+        return previousWeight;
     }
     
-    @Override public Set<String> vertices() {
-        throw new RuntimeException("not implemented");
+    @Override
+    public boolean remove(String vertex) {
+
+        // find the vertex in vertices List
+        for (Vertex v: vertices) {
+            // if vertex is found
+            if (v.getValue().equals(vertex)) {
+                // get the labels of vertices that starts at v
+                Set<String> startsAtV = v.getStarts().keySet();
+
+                // get the labels of vertices that ends at v
+                Set<String> endsAtV = v.getEnds().keySet();
+
+                // remove the connection of v from the vertices which starts or ends at v
+                for (Vertex vert: vertices) {
+                    if (startsAtV.contains(vert.getValue())) {
+                        vert.removeEdge(v.getValue(), false);
+                    }
+
+                    if (endsAtV.contains(vert.getValue())) {
+                        vert.removeEdge(v.getValue(), true);
+                    }
+                }
+                // remove the vertex v and return true
+                vertices.remove(v);
+
+                checkRep();
+                return true;
+            }
+        }
+
+        // return false, if vertex does not exist in the vertices List
+        checkRep();
+        return false;
     }
     
-    @Override public Map<String, Integer> sources(String target) {
-        throw new RuntimeException("not implemented");
+    @Override
+    public Set<String> vertices() {
+        // initialize a set to store the labels of all the vertices
+        Set<String> result = new HashSet<>();
+
+        // store the labels of vertices in the set
+        for (Vertex v: vertices) {
+            result.add(v.getValue());
+        }
+
+        return result;
     }
     
-    @Override public Map<String, Integer> targets(String source) {
-        throw new RuntimeException("not implemented");
+    @Override
+    public Map<String, Integer> sources(String target) {
+        // initialize Map to store the result
+        Map<String, Integer> result = new HashMap<>();
+
+        // find the target vertex in vertices List
+        for (Vertex v: vertices) {
+            // store the sources (or the vertices that ends at target) in the map
+            if (v.getValue().equals(target)) {
+                result = v.getEnds();
+                break;
+            }
+        }
+        return result;
     }
     
-    // TODO toString()
+    @Override
+    public Map<String, Integer> targets(String source) {
+        // initialize Map to store the result
+        Map<String, Integer> result = new HashMap<>();
+
+        // find the source vertex in the vertices List
+        for (Vertex v: vertices) {
+            // store the targets (or the vertices that starts at the source) in the map
+            if (v.getValue().equals(source)) {
+                result = v.getStarts();
+                break;
+            }
+        }
+        return result;
+    }
     
+    @Override
+    public String toString() {
+        // initialize empty String
+        String str = "";
+
+        // add all the vertices' String representation to str
+        for (Vertex v: vertices) {
+            str += v.toString() + "\n";
+        }
+        return str;
+    }
 }
 
 /**
- * TODO specification
- * Mutable.
+ * A Vertex of weighted-directed graph.
+ * Vertex contains the information of edges that starts/ ends from/ to it.
+ *
+ * Vertex is Mutable.
  * This class is internal to the rep of ConcreteVerticesGraph.
  * 
  * <p>PS2 instructions: the specification and implementation of this class is
@@ -66,21 +279,171 @@ public class ConcreteVerticesGraph implements Graph<String> {
  */
 class Vertex {
     
-    // TODO fields
+    // fields
+    private String value;
+    private Map<String, Integer> starts;
+    private Map<String, Integer> ends;
+
     
     // Abstraction function:
-    //   TODO
+    //      Represents a vertex of weighted-directed graph.
+    //   
     // Representation invariant:
-    //   TODO
+    //      values of starts and ends map are > 0 (i.e positive weights)
+    //      value of vertex cannot be empty string 
+    //      no edge can connect vertex to itself i.e !starts.containsKey(value) && !ends.containsKey(value)
+    //      
     // Safety from rep exposure:
-    //   TODO
+    //      all fields are private and immutable.
     
-    // TODO constructor
+    /**
+     * Creates a new instance of Vertex.
+     *
+     * @param value value of the vertex
+     */
+    public Vertex(String value) {
+        this.value = value;
+
+        // initialize empty Maps for starts and ends edges
+        starts = new HashMap<>();
+        ends = new HashMap<>();
+
+        checkRep();
+    }
+
+    /**
+     * Checks that representation invariant is true.
+     */
+    private void checkRep() {
+        // check that edges that starts from the current vertex have positive weight
+        for (Map.Entry edge: starts.entrySet()) {
+            assert (int) edge.getValue() > 0;
+        }
+
+        // check that edges that ends at the current vertex have positive weight
+        for (Map.Entry edge: ends.entrySet()) {
+            assert (int) edge.getValue() > 0;
+        }
+
+        // value of current vertex cannot be an empty String
+        assert !value.equals("");
+
+        // no edge can connect the vertex to itself
+        assert !starts.containsKey(value) && !ends.containsKey(value);
+    }
+
+    /**
+     * Connects an edge to the current vertex.
+     *
+     * @param value value of vertex to which edge is connected at other end.
+     * @param weight weight of the edge
+     * @param isStart true if the edge starts from current vertex,
+     *               false if the edge ends at current vertex.
+     * 
+     * @return false if the edge is already connected to current vertex, true otherwise.
+     */
+    public boolean connectEdge(String value, Integer weight, boolean isStart) {
+        assert weight > 0;
+
+        // if such an edge already exists, return false
+        if (isStart && starts.containsKey(value) || (!isStart) && ends.containsKey(value)) {
+            return false;
+        } 
+
+        // connect edge to the vertex and return true
+        if (isStart) {
+            starts.put(value, weight);
+        } else {
+            ends.put(value, weight);
+        }
+
+        checkRep();
+        return true;
+    }
+
+    /**
+     * Removes an edge from the current vertex. 
+     *
+     * @param value value of vertex to which edge is connected at other end.
+     * @param isStart true if the edge starts from current vertex,
+     *               false if the edge ends at current vertex.
+     *
+     * @return false if the edge is does not exist, true otherwise.
+     */
+    public boolean removeEdge(String value, boolean isStart) {
+        // if such an edge does not exist, return false
+        if (isStart && (!starts.containsKey(value)) || (!isStart) && (!ends.containsKey(value))) {
+            return false;
+        }
+
+        // remove the edge connection from the vertex
+        if (isStart) {
+            starts.remove(value);
+        } else {
+            ends.remove(value);
+        }
+
+        checkRep();
+        return true;
+    }
+
+    /**
+     * @return value of the vertex.
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * Sets the value of current vertex.
+     *
+     * @param value new value of current vertex.
+     */
+    public void setValue(String value) {
+        this.value = value;
+        checkRep();
+    }
+
+    /**
+     * @return edges that starts from the current vertex.
+     */
+    public Map<String, Integer> getStarts() {
+        return starts;
+    }
+
+    /**
+     * @return edges that ends at the current vertex.
+     */
+    public Map<String, Integer> getEnds() {
+        return ends;
+    }
     
-    // TODO checkRep
-    
-    // TODO methods
-    
-    // TODO toString()
-    
+    /**
+     * @return String representation of the object of Vertex class.
+     */
+    public String toString() {
+        // add value to the string
+        String str = "Value = " + getValue() + "\n\n";
+
+        if (starts.isEmpty()) {
+            str += "No edges starts from this vertex!\n";
+        } else {
+            // add the edges that starts from the current vertex
+            str += "-- Edges starting from current vertex --\n";
+            for (Map.Entry edge: starts.entrySet()) {
+                str += "--" + edge.getValue() + "-> " + edge.getKey() + "\n";
+            }
+        }
+
+        if (ends.isEmpty()) {
+            str += "No edges ends at this vertex!\n";
+        } else {
+            // add the edges that ends at the current vertex
+            str += "-- Edges ending at current vertex --\n";
+            for (Map.Entry edge: ends.entrySet()) {
+                str += edge.getKey() + " --" + edge.getValue() + "->\n";
+            }
+        }
+        return str;
+    }
 }
