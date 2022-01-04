@@ -40,16 +40,16 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
         Set<L> uniqueValues = new HashSet<>();
 
         // iterate over vertices
-        for (Vertex v: vertices) {
+        for (Vertex<L> v: vertices) {
             // add current vertex's label to the uniqueValues set
-            uniqueValues.add( (L) v.getValue());
+            uniqueValues.add(v.getValue());
 
             // get the labels of vertices that starts/ ends at v
             Set<L> starts = v.getStarts().keySet();
             Set<L> ends = v.getEnds().keySet();
 
             // v must be in the getEnds()/ getStarts() of vertices that starts/ ends at v
-            for (Vertex vert: vertices) {
+            for (Vertex<L> vert: vertices) {
                 if (starts.contains(vert.getValue())) {
                     assert vert.getEnds().containsKey(v.getValue());
                 }
@@ -61,7 +61,7 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
             // vertices must contain all the vertices of starts
             for (L s: starts) {
                 boolean found = false;
-                for (Vertex vertex: vertices) {
+                for (Vertex<L> vertex: vertices) {
                     if (vertex.getValue().equals(s)) {
                         found = true;
                         break;
@@ -73,7 +73,7 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
             // vertices must contain all the vertices of ends
             for (L e: ends) {
                 boolean found = false;
-                for (Vertex vertex: vertices) {
+                for (Vertex<L> vertex: vertices) {
                     if (vertex.getValue().equals(e)) {
                         found = true;
                         break;
@@ -90,14 +90,14 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
     @Override
     public boolean add(L vertex) {
         // if vertex is already in the graph, return false
-        for (Vertex v: vertices) {
+        for (Vertex<L> v: vertices) {
             if (v.getValue().equals(vertex)) {
                 return false;
             }
         }
 
         // create a new vertex and add it to vertices List
-        Vertex newVertex = new Vertex<L>(vertex);
+        Vertex<L> newVertex = new Vertex<>(vertex);
         vertices.add(newVertex);
 
         checkRep();
@@ -112,8 +112,8 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
         int previousWeight = 0;
 
         // check if edge already exists
-        for (Vertex src: vertices) {
-            for (Vertex tgt: vertices) {
+        for (Vertex<L> src: vertices) {
+            for (Vertex<L> tgt: vertices) {
                 // if edge exists,  
                 if (src.getValue().equals(source) && tgt.getValue().equals(target) && src.getStarts().containsKey(target)) {
                     previousWeight = (int) src.getStarts().get(target);
@@ -140,7 +140,7 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
             boolean targetExists = false;
 
             // if source and/or target already exists in the graph, connect the edge
-            for (Vertex v: vertices) {
+            for (Vertex<L> v: vertices) {
                 // if source exists, connect it to target
                 if (v.getValue().equals(source)) {
                     sourceExists = true;
@@ -156,14 +156,14 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
 
             // if source does not exist, create a new vertex and connect it to target
             if (!sourceExists) {
-                Vertex sourceVertex = new Vertex<L>(source);
+                Vertex<L> sourceVertex = new Vertex<>(source);
                 sourceVertex.connectEdge(target, weight, true);
                 vertices.add(sourceVertex);
             }
 
             // if target does not exist, create a new vertex and connect it to source
             if (!targetExists) {
-                Vertex targetVertex = new Vertex<L>(target);
+                Vertex<L> targetVertex = new Vertex<>(target);
                 targetVertex.connectEdge(source, weight, false);
                 vertices.add(targetVertex);
             }
@@ -177,7 +177,7 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
     public boolean remove(L vertex) {
 
         // find the vertex in vertices List
-        for (Vertex v: vertices) {
+        for (Vertex<L> v: vertices) {
             // if vertex is found
             if (v.getValue().equals(vertex)) {
                 // get the labels of vertices that starts at v
@@ -187,7 +187,7 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
                 Set<L> endsAtV = v.getEnds().keySet();
 
                 // remove the connection of v from the vertices which starts or ends at v
-                for (Vertex vert: vertices) {
+                for (Vertex<L> vert: vertices) {
                     if (startsAtV.contains(vert.getValue())) {
                         vert.removeEdge(v.getValue(), false);
                     }
@@ -215,8 +215,8 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
         Set<L> result = new HashSet<>();
 
         // store the labels of vertices in the set
-        for (Vertex v: vertices) {
-            result.add( (L) v.getValue());
+        for (Vertex<L> v: vertices) {
+            result.add(v.getValue());
         }
 
         return result;
@@ -228,7 +228,7 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
         Map<L, Integer> result = new HashMap<>();
 
         // find the target vertex in vertices List
-        for (Vertex v: vertices) {
+        for (Vertex<L> v: vertices) {
             // store the sources (or the vertices that ends at target) in the map
             if (v.getValue().equals(target)) {
                 result = v.getEnds();
@@ -244,7 +244,7 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
         Map<L, Integer> result = new HashMap<>();
 
         // find the source vertex in the vertices List
-        for (Vertex v: vertices) {
+        for (Vertex<L> v: vertices) {
             // store the targets (or the vertices that starts at the source) in the map
             if (v.getValue().equals(source)) {
                 result = v.getStarts();
@@ -260,7 +260,7 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
         String str = "";
 
         // add all the vertices' String representation to str
-        for (Vertex v: vertices) {
+        for (Vertex<L> v: vertices) {
             str += v.toString() + "\n";
         }
         return str;
@@ -315,12 +315,12 @@ class Vertex<L> {
      */
     private void checkRep() {
         // check that edges that starts from the current vertex have positive weight
-        for (Map.Entry edge: starts.entrySet()) {
+        for (Map.Entry<L, Integer> edge: starts.entrySet()) {
             assert (int) edge.getValue() > 0;
         }
 
         // check that edges that ends at the current vertex have positive weight
-        for (Map.Entry edge: ends.entrySet()) {
+        for (Map.Entry<L, Integer> edge: ends.entrySet()) {
             assert (int) edge.getValue() > 0;
         }
 
@@ -426,7 +426,7 @@ class Vertex<L> {
         } else {
             // add the edges that starts from the current vertex
             str += "-- Edges starting from current vertex --\n";
-            for (Map.Entry edge: starts.entrySet()) {
+            for (Map.Entry<L, Integer> edge: starts.entrySet()) {
                 str += "--" + edge.getValue() + "-> " + edge.getKey() + "\n";
             }
         }
@@ -436,7 +436,7 @@ class Vertex<L> {
         } else {
             // add the edges that ends at the current vertex
             str += "-- Edges ending at current vertex --\n";
-            for (Map.Entry edge: ends.entrySet()) {
+            for (Map.Entry<L, Integer> edge: ends.entrySet()) {
                 str += edge.getKey() + " --" + edge.getValue() + "->\n";
             }
         }

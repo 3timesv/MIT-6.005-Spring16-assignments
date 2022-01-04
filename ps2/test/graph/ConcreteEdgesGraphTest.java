@@ -21,7 +21,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
      * Provide a ConcreteEdgesGraph for tests in GraphInstanceTest.
      */
     @Override public Graph<String> emptyInstance() {
-        return new ConcreteEdgesGraph();
+        return new ConcreteEdgesGraph<String>();
     }
     
     /*
@@ -63,7 +63,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
 
     @Test
     public void testEdgeCreation() {
-        Edge edge = new Edge("A", "B", 10);
+        Edge<String> edge = new Edge<>("A", "B", 10);
 
         assertEquals("expected source", "A", edge.getSource());
         assertEquals("expected target", "B", edge.getTarget());
@@ -72,7 +72,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
 
     @Test
     public void testEdgetoString() {
-        Edge edge = new Edge("A", "B", 10);
+        Edge<String> edge = new Edge<>("A", "B", 10);
         assertEquals("expected string representation", "A --10-> B", edge.toString());
     }
 }

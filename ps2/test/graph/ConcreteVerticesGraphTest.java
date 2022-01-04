@@ -23,7 +23,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
      * Provide a ConcreteVerticesGraph for tests in GraphInstanceTest.
      */
     @Override public Graph<String> emptyInstance() {
-        return new ConcreteVerticesGraph();
+        return new ConcreteVerticesGraph<String>();
     }
     
     /*
@@ -36,7 +36,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // ConcreteVerticesGraph.toString() : graph is empty
     @Test
     public void testToStringEmptyGraph() {
-        Graph<String> g = new ConcreteVerticesGraph();
+        Graph<String> g = new ConcreteVerticesGraph<String>();
 
         assertEquals("expected empty String", "", g.toString());
     }
@@ -44,7 +44,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // ConcreteVerticesGraph.toString() : graph is non-empty
     @Test
     public void testToStringNonEmptyGraph() {
-        Graph<String> g = new ConcreteVerticesGraph();
+        Graph<String> g = new ConcreteVerticesGraph<String>();
         g.set("A", "B", 10);
 
         // there can be two possible answers (vertex A can be printed before B or vice versa), both are valid
@@ -91,7 +91,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // connectEdge() : edge is not connected to vertex & edge starts from the vertex
     @Test
     public void testConnectEdgeNotConnectedStarts() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         boolean result = v.connectEdge("B", 10, true);
 
         assertTrue("expected true", result);
@@ -101,7 +101,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // connectEdge() : edge is not connected to vertex & edge ends at the vertex
     @Test
     public void testConnectEdgeNotConnectedEnds() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         boolean result = v.connectEdge("B", 10, false);
 
         assertTrue("expected true", result);
@@ -111,7 +111,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // connectEdge() : edge is already connected to vertex & edge starts from the vertex
     @Test
     public void testConnectEdgeConnectedStarts() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         v.connectEdge("B", 10, true);
 
         boolean result = v.connectEdge("B", 5, true);
@@ -121,7 +121,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // connectEdge() : edge is already connected to vertex & edge ends at the vertex
     @Test
     public void testConnectEdgeConnectedEnds() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         v.connectEdge("B", 10, false);
 
         boolean result = v.connectEdge("B", 5, false);
@@ -131,7 +131,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // removeEdge() : edge is not connected to vertex & edge starts from the vertex
     @Test
     public void testRemoveEdgeNotConnectedStarts() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         boolean result = v.removeEdge("B", true);
 
         assertFalse("expected false", result);
@@ -140,7 +140,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // removeEdge() : edge is not connected to vertex & edge ends at the vertex
     @Test
     public void testRemoveEdgeNotConnectedEnds() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         boolean result = v.removeEdge("B", false);
 
         assertFalse("expected false", result);
@@ -149,7 +149,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // removeEdge() : edge is already connected to vertex & edge starts from the vertex
     @Test
     public void testRemoveEdgeConnectedStarts() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         v.connectEdge("B", 10, true);
 
         boolean result = v.removeEdge("B", true);
@@ -159,7 +159,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // removeEdge() : edge is already connected to vertex & edge ends at the vertex
     @Test
     public void testRemoveEdgeConnectedEnds() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         v.connectEdge("B", 10, false);
 
         boolean result = v.removeEdge("B", false);
@@ -169,7 +169,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // getValue() :
     @Test
     public void testGetValue() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
 
         assertEquals("expected vertex value", "A", v.getValue());
     }
@@ -177,7 +177,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // setValue() :
     @Test
     public void testSetValue() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         v.setValue("B");
 
         assertEquals("expected value to be replaced", "B", v.getValue());
@@ -186,7 +186,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // getStarts() : Zero vertices starts from the vertex
     @Test
     public void testGetStartsZeroVertices() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
 
         assertTrue("expected empty map", v.getStarts().isEmpty());
     }
@@ -194,7 +194,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // getStarts() : NonZero vertices starts from the vertex
     @Test
     public void testGetStartsNonZeroVertices() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         v.connectEdge("B", 10, true);
 
         Map<String, Integer> expectedMap = new HashMap<>();
@@ -206,14 +206,14 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // getEnds() : Zero vertices ends at the vertex
     @Test
     public void testGetEndsZeroVertices() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         assertTrue("expected empty map", v.getEnds().isEmpty());
     }
 
     // getEnds() : NonZero vertices ends at the vertex
     @Test
     public void testGetEndsNonZeroVertices() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         v.connectEdge("B", 10, false);
 
         Map<String, Integer> expectedMap = new HashMap<>();
@@ -225,7 +225,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // toString() : Zero vertices starts from and Zero vertices ends at the vertex
     @Test
     public void testToStringZeroVerticesStartsZeroVerticesEnds() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
 
         String expectedString = "Value = A\n\nNo edges starts from this vertex!\n";
         expectedString += "No edges ends at this vertex!\n";
@@ -236,7 +236,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // toString() : Zero vertices starts from and NonZero vertices ends at the vertex
     @Test
     public void testToStringZeroVerticesStartsNonZeroVerticesEnds() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         v.connectEdge("B", 10, false);
 
         String expectedString = "Value = A\n\nNo edges starts from this vertex!\n";
@@ -249,7 +249,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // toString() : NonZero vertices starts from and Zero vertices ends at the vertex
     @Test
     public void testToStringNonZeroVerticesStartsZeroVerticesEnds() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         v.connectEdge("B", 10, true);
 
         String expectedString = "Value = A\n\n-- Edges starting from current vertex --\n";
@@ -261,7 +261,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // toString() : Zero vertices starts from and Zero vertices ends at the vertex
     @Test 
     public void testToStringNonZeroVerticesStartsNonZeroVerticesEnds() {
-        Vertex v = new Vertex("A");
+        Vertex<String> v = new Vertex<>("A");
         v.connectEdge("B", 10, true);
         v.connectEdge("C", 5, false);
 

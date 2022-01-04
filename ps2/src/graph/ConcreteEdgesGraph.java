@@ -42,7 +42,7 @@ public class ConcreteEdgesGraph<L> implements Graph<L> {
      * Checks that representation invariant is true.
      */
     private void checkRep() {
-        for (Edge e: edges) {
+        for (Edge<L> e: edges) {
             assert vertices.contains(e.getSource());
             assert vertices.contains(e.getTarget());
         }
@@ -71,7 +71,7 @@ public class ConcreteEdgesGraph<L> implements Graph<L> {
 
         // check whether edge exists in the graph
         boolean edgeExists = false;
-        for (Edge e: edges) {
+        for (Edge<L> e: edges) {
             // if edge exists in the graph
             if (e.getSource().equals(source) && e.getTarget().equals(target)) {
                 edgeExists = true;
@@ -82,7 +82,7 @@ public class ConcreteEdgesGraph<L> implements Graph<L> {
                     edges.remove(e);
                     // otherwise, add the new edge to the graph and remove the old edge from the graph
                 } else {
-                    Edge newEdge = new Edge<L>(source, target, weight);
+                    Edge<L> newEdge = new Edge<L>(source, target, weight);
                     edges.remove(e);
                     edges.add(newEdge);
                 }
@@ -93,7 +93,7 @@ public class ConcreteEdgesGraph<L> implements Graph<L> {
         // if edge does not exist, create the edge and add it to the graph
         if (!edgeExists) {
             if (weight != 0) {
-                Edge newEdge = new Edge<L>(source, target, weight);
+                Edge<L> newEdge = new Edge<L>(source, target, weight);
                 edges.add(newEdge);
                 vertices.add(source);
                 vertices.add(target);
@@ -132,9 +132,9 @@ public class ConcreteEdgesGraph<L> implements Graph<L> {
         Map<L, Integer> sourcesMap = new HashMap<>();
 
         // for all edges, add the edge in the sourcesMap if edge.getTarget() equals target
-        for (Edge edge: edges) {
+        for (Edge<L> edge: edges) {
             if (edge.getTarget().equals(target)) {
-                sourcesMap.put( (L) edge.getSource(), edge.getWeight());
+                sourcesMap.put(edge.getSource(), edge.getWeight());
             }
         }
 
@@ -145,9 +145,9 @@ public class ConcreteEdgesGraph<L> implements Graph<L> {
         Map<L, Integer> targetsMap = new HashMap<>();
 
         // for all edges, add the edge in the targetsMap if edge.getSource() equals source
-        for (Edge edge: edges) {
+        for (Edge<L> edge: edges) {
             if (edge.getSource().equals(source)) {
-                targetsMap.put( (L) edge.getTarget(), edge.getWeight());
+                targetsMap.put(edge.getTarget(), edge.getWeight());
             }
         }
 
@@ -172,7 +172,7 @@ public class ConcreteEdgesGraph<L> implements Graph<L> {
 
         // add all the edges to the String
         str += "\n" + "-- Edges --" + "\n";
-        for (Edge e: edges) {
+        for (Edge<L> e: edges) {
             str += e + "\n";
         }
 
