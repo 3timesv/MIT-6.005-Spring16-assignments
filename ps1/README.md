@@ -6,7 +6,7 @@
 
 #### Problem 1
 
-* Move to test directory : ```mkdir test```
+* Move to test directory : ```cd test```
 * compile : ```javac -cp ".:/usr/share/java/junit4-4.12.jar:../lib/javax.json-1.0.jar:" ../src/twitter/*.java twitter/*.java```
 * execute : ```java -ea -cp ".:/usr/share/java/junit4-4.12.jar:../lib/javax.json-1.0.jar:../src/:" org.junit.runner.JUnitCore twitter.ExtractTest```
 
