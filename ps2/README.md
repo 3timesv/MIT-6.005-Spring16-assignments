@@ -1,4 +1,4 @@
-## Commands to test problems
+## Commands to run tests
 
 ### Assumptions
 
@@ -6,28 +6,28 @@
 
 ### Problem 2.1
 
-* *Step 1* Move to test directory: ```cd test```
-* *Step 2* compile: ```javac -cp ".:/usr/share/java/junit4-4.12.jar:" ../src/graph/*.java graph/*.java```
-* *Step 3* run: ```java -ea -cp ".:/usr/share/java/junit4-4.12.jar:../src/:" org.junit.runner.JUnitCore graph.ConcreteEdgesGraphTest```
+* **Step 1** Move to test directory: ```cd test```
+* **Step 2** compile: ```javac -cp ".:/usr/share/java/junit4-4.12.jar:" ../src/graph/*.java graph/*.java```
+* **Step 3** run: ```java -ea -cp ".:/usr/share/java/junit4-4.12.jar:../src/:" org.junit.runner.JUnitCore graph.ConcreteEdgesGraphTest```
 
 ### Problem 2.2
 
 Repeat first two steps of problem 2.1
-* *Step 3* run: ```java -ea -cp ".:/usr/share/java/junit4-4.12.jar:../src/:" org.junit.runner.JUnitCore graph.ConcreteVerticesGraphTest```
+* **Step 3** run: ```java -ea -cp ".:/usr/share/java/junit4-4.12.jar:../src/:" org.junit.runner.JUnitCore graph.ConcreteVerticesGraphTest```
 
 
 ### Problem 3.1
 Repeat first two steps of problem 2.1
-* *Step 3* run:
+* **Step 3** run:
     * ```java -ea -cp ".:/usr/share/java/junit4-4.12.jar:../src/:" org.junit.runner.JUnitCore graph.ConcreteEdgesGraphTest```
     * ```java -ea -cp ".:/usr/share/java/junit4-4.12.jar:../src/:" org.junit.runner.JUnitCore graph.ConcreteVerticesGraphTest```
 
 ### Problem 3.2
 Repeat first two steps of problem 2.1
-* *Step 3* run: ```java -ea -cp ".:/usr/share/java/junit4-4.12.jar:../src/:" org.junit.runner.JUnitCore graph.GraphStaticTest```
+* **Step 3** run: ```java -ea -cp ".:/usr/share/java/junit4-4.12.jar:../src/:" org.junit.runner.JUnitCore graph.GraphStaticTest```
 
 ### Problem 4
 
 Repeat first step of problem 2.1
-* *Step 2* compile: ```javac -cp ".:/usr/share/java/junit4-4.12.jar:" ../src/graph/*.java ../src/poet/*.java graph/*.java poet/*.java```
-* *Step 3* run: ```java -ea -cp ".:/usr/share/java/junit4-4.12.jar:../src/:" org.junit.runner.JUnitCore poet.GraphPoetTest
+* **Step 2** compile: ```javac -cp ".:/usr/share/java/junit4-4.12.jar:" ../src/graph/*.java ../src/poet/*.java graph/*.java poet/*.java```
+* **Step 3** run: ```java -ea -cp ".:/usr/share/java/junit4-4.12.jar:../src/:" org.junit.runner.JUnitCore poet.GraphPoetTest
