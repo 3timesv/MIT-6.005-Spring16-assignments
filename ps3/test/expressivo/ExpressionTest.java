@@ -28,6 +28,9 @@ public class ExpressionTest {
     //
     // Test hashCode():
     //      Number, Variable, Plus, Multiply
+    //
+    // Test parse():
+    //      sum, multiply, multiply precedes sum, sum precedes multiply, extra whitespaces, multiple parentheses
 
     @Test(expected=AssertionError.class)
     public void testAssertionsEnabled() {
@@ -171,5 +174,64 @@ public class ExpressionTest {
         Expression m2 = Expression.makeMultiply(Expression.make(34.2), Expression.make("x"));
 
         assertNotEquals("expected different hashCodes", m1.hashCode(), m2.hashCode());
+    }
+
+    // parse() : sum
+    @Test
+    public void testParseSum() {
+        Expression exp = Expression.parse("3 + 2.4");
+
+        assertTrue("expected Plus instance", exp instanceof Plus);
+        assertEquals("expected same strings", "(3.0 + 2.4)", exp.toString());
+    }
+
+    // parse() : multiply
+    @Test
+    public void testParseMul() {
+        Expression exp = Expression.parse("3 * 2.4");
+
+        assertTrue("expected Multiply instance", exp instanceof Multiply);
+        assertEquals("expected same strings", "(3.0 * 2.4)", exp.toString());
+    }
+
+    // parse() : multiply precedes sum
+    @Test
+    public void testParseMulPrecedesSum() {
+        Expression exp = Expression.parse("3 * x + 2.4");
+
+        assertTrue("expected Plus instance", exp instanceof Plus);
+        assertEquals("expected same strings", "((3.0 * x) + 2.4)", exp.toString());
+    }
+
+    // parse() : sum precedes multiply
+    @Test
+    public void testParseSumPrecedesMul() {
+        Expression exp = Expression.parse("3 * (x + 2.4)");
+
+        assertTrue("expected Multiply instance", exp instanceof Multiply);
+        assertEquals("expected same strings", "(3.0 * (x + 2.4))", exp.toString());
+    }
+
+    // parse() : extra whitespaces
+    @Test
+    public void testParseExtraWhitespaces() {
+        Expression exp = Expression.parse("(2*x   )+  (   y*x   )");
+
+        assertTrue("expected Plus instance", exp instanceof Plus);
+        assertEquals("expected same strings", "((2.0 * x) + (y * x))", exp.toString());
+    }
+
+    // parse() : Multiple parentheses
+    @Test
+    public void testParseMultipleParentheses() {
+        Expression exp = Expression.parse("4 + 3 * x + 2 * x * x + 1 * x * x * (((x)))");
+
+        // all expected strings below are valid
+        String expected1 = "((4.0 + (3.0 * x)) + (2.0 * (x * x)) + (1.0 * (x * (x * (x)))))";
+        String expected2 = "((4.0 + (3.0 * x)) + (((2.0 * x) * x) + (((1.0 * x) * x) * x)))";
+        String expected3 = "(((4.0 + (3.0 * x)) + ((2.0 * x) * x)) + (((1.0 * x) * x) * x))";
+
+        assertTrue("expected Plus instance", exp instanceof Plus);
+        assertTrue("expected either one of the strings", exp.toString().equals(expected1) || exp.toString().equals(expected2) || exp.toString().equals(expected3));
     }
 }
