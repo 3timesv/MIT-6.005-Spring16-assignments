@@ -18,13 +18,13 @@ public interface Expression {
     
     // Datatype definition
     //   
-    //   Expression = Number(whole: int, decimal: int) + Variable(name: String)
-    //                                                 + Plus(left: Expression, right: Expression)
-    //                                                 + Multiply(left: Expression, right: Expression)
+    //   Expression = Number(double: value) + Variable(name: String)
+    //                                      + Plus(left: Expression, right: Expression)
+    //                                      + Multiply(left: Expression, right: Expression)
 
     /** @return an Expression consisting of number. */
-    public static Expression make(int whole, int decimal) {
-        return new Number(whole, decimal);
+    public static Expression make(double value) {
+        return new Number(value);
     }
 
     /** @return an Expression consisting of just a single variable. */
