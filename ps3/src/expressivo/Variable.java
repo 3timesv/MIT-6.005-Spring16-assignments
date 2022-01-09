@@ -43,4 +43,12 @@ public class Variable implements Expression {
     public int hashCode() {
         return name.hashCode();
     }
+
+    @Override
+    public Expression differentiate(String variable) {
+        if (variable.equals(name)) {
+            return new Number(1);
+        }
+        return new Number(0);
+    }
 }

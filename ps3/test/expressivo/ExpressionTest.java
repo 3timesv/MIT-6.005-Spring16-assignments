@@ -1,6 +1,6 @@
 /* Copyright (c) 2015-2016 MIT 6.005 course staff, all rights reserved.
  * Redistribution of original or derived work requires permission of course staff.
- */
+j*/
 package expressivo;
 
 import static org.junit.Assert.*;
@@ -31,6 +31,9 @@ public class ExpressionTest {
     //
     // Test parse():
     //      sum, multiply, multiply precedes sum, sum precedes multiply, extra whitespaces, multiple parentheses
+    //
+    // Test differentiate():
+    //      constant, variable, sum, multiply
 
     @Test(expected=AssertionError.class)
     public void testAssertionsEnabled() {
@@ -233,5 +236,43 @@ public class ExpressionTest {
 
         assertTrue("expected Plus instance", exp instanceof Plus);
         assertTrue("expected either one of the strings", exp.toString().equals(expected1) || exp.toString().equals(expected2) || exp.toString().equals(expected3));
+    }
+
+    // differentiate() : constant
+    @Test
+    public void testDifferentiateConstant() {
+        Expression exp = Expression.make(5);
+        Expression diff = exp.differentiate("x");
+
+        assertEquals("expected zero", Expression.make(0), diff);
+    }
+
+    // differentiate() : variable
+    @Test
+    public void testDifferentiateVariable() {
+        Expression exp = Expression.make("x");
+        Expression diff = exp.differentiate("x");
+
+        assertEquals("expected one", Expression.make(1), diff);
+    }
+
+    // differentiate() : sum
+    @Test
+    public void testDifferentiateSum() {
+        Expression exp = Expression.makePlus(Expression.make("x"), Expression.make("y"));
+        Expression diff = exp.differentiate("x");
+
+        String expected = "(1.0 + 0.0)";
+        assertEquals("expected same strings", expected, diff.toString());
+    }
+
+    // differentiate() : multiply
+    @Test
+    public void testDifferentiateMultiply() {
+        Expression exp = Expression.makeMultiply(Expression.make("x"), Expression.make("y"));
+        Expression diff = exp.differentiate("x");
+
+        String expected = "((1.0 * y) + (x * 0.0))";
+        assertEquals("expected same strings", expected, diff.toString());
     }
 }

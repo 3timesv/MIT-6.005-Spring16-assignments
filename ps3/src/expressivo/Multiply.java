@@ -39,5 +39,11 @@ public class Multiply implements Expression {
     public int hashCode() {
         return ("" + left.hashCode() + "*" + right.hashCode()).hashCode();
     }
+
+    @Override
+    public Expression differentiate(String variable) {
+        return new Plus(new Multiply(left.differentiate(variable), right),
+                new Multiply(left, right.differentiate(variable)));
+    }
 }
 

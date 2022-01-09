@@ -94,6 +94,7 @@ public interface Expression {
             throw new IllegalArgumentException("invalid expression");
         }
     }
+
     
     /**
      * @return a parsable representation of this expression, such that
@@ -118,7 +119,12 @@ public interface Expression {
     @Override
     public int hashCode();
     
-    // TODO more instance methods
+    /**
+     * Differentiates an expression.
+     * @param variable the variable to differentiate with respect to.
+     * @return Expression representing the derivative of the input.
+     */
+    public Expression differentiate(String variable);
     
 }
 

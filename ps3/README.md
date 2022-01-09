@@ -9,3 +9,10 @@
 * **Step 1** Move to test directory: ```cd test```
 * **Step 2** compile: ```javac -cp ".:/usr/share/java/junit4-4.12.jar:../lib/antlr.jar:"  ../src/expressivo/*.java ../src/expressivo/parser/*.java expressivo/*.java```
 * **Step 3** run: ```java -ea -cp ".:/usr/share/java/junit4-4.12.jar:../lib/antlr.jar:../src/:../src/parser/:" org.junit.runner.JUnitCore expressivo.ExpressionTest```
+
+#### Problem 3
+
+Repeat step 1 from problem 1.
+* **Step 2** compile: ```javac -cp ".:/usr/share/java/junit4-4.12.jar:../lib/antlr.jar:"  ../src/expressivo/*.java ../src/expressivo/parser/*.java expressivo/*.java```
+* **Step 3** run: ```java -ea -cp ".:/usr/share/java/junit4-4.12.jar:../lib/antlr.jar:../src/:../src/parser/:" org.junit.runner.JUnitCore expressivo.ExpressionTest```
+* **Step 4** run: ```java -ea -cp ".:/usr/share/java/junit4-4.12.jar:../lib/antlr.jar:../src/:../src/parser/:" org.junit.runner.JUnitCore expressivo.CommandsTest```

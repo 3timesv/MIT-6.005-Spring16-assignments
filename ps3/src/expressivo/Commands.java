@@ -24,7 +24,19 @@ public class Commands {
      * @throws IllegalArgumentException if the expression or variable is invalid
      */
     public static String differentiate(String expression, String variable) {
-        throw new RuntimeException("unimplemented");
+        // if variable contains any non-letter characters, throw an exception
+        if (!variable.matches("[a-zA-Z]+")) {
+            throw new IllegalArgumentException("Invalid variable");
+        }
+
+        // try to parse and differentiate the expression
+        try {
+            Expression e = Expression.parse(expression);
+            return e.differentiate(variable).toString();
+            // if the expression is invalid, throw an exception
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid expression");
+        }
     }
     
     /**
