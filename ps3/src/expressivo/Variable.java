@@ -1,5 +1,7 @@
 package expressivo;
 
+import java.util.Map;
+
 public class Variable implements Expression {
     private final String name;
 
@@ -50,5 +52,18 @@ public class Variable implements Expression {
             return new Number(1);
         }
         return new Number(0);
+    }
+
+    @Override
+    public Expression simplify(Map<String, Double> env) {
+        if (env.containsKey(name)) {
+            return new Number(env.get(name));
+        } 
+        return this;
+    }
+
+    @Override
+    public double getValue(){
+        throw new UnsupportedOperationException();
     }
 }

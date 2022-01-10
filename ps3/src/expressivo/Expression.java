@@ -5,6 +5,7 @@ package expressivo;
 
 import java.util.List;
 import java.util.Stack;
+import java.util.Map;
 
 import org.antlr.v4.gui.Trees;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -125,7 +126,18 @@ public interface Expression {
      * @return Expression representing the derivative of the input.
      */
     public Expression differentiate(String variable);
-    
+
+    /**
+     * Simplifies an expression.
+     * @param env a map of variables to values.
+     * @return simplified Expression
+     */
+    public Expression simplify(Map<String, Double> env);
+
+    /**
+     * @return the value of the expression.
+     */
+    public double getValue();
 }
 
 /** Make a Expression value from a parse tree. */

@@ -7,6 +7,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * Tests for the Expression abstract data type.
  */
@@ -34,6 +37,10 @@ public class ExpressionTest {
     //
     // Test differentiate():
     //      constant, variable, sum, multiply
+    //
+    // Test simplify():
+    //     constant, variable, sum, multiply
+    //     env 0, 1, all values to be substitued
 
     @Test(expected=AssertionError.class)
     public void testAssertionsEnabled() {
@@ -274,5 +281,93 @@ public class ExpressionTest {
 
         String expected = "((1.0 * y) + (x * 0.0))";
         assertEquals("expected same strings", expected, diff.toString());
+    }
+
+    // simplify() : Number
+    @Test
+    public void testNumber() {
+        Expression exp = Expression.make(3.4);
+        Map<String, Double> env = new HashMap<>();
+
+        assertEquals("expected equal numbers", Expression.make(3.4), exp.simplify(env));
+    }
+
+    // simplify() : Variable, env doesn't contain variable value
+    @Test
+    public void testVariableEnvNotContain() {
+        Expression exp = Expression.make("x");
+        Map<String, Double> env = new HashMap<>();
+
+        assertEquals("expected variable to be same", Expression.make("x"), exp.simplify(env));
+    }
+
+    // simplify() : Variable, env contains variable's value
+    @Test
+    public void testVariableEnvContains() {
+        Expression exp = Expression.make("x");
+        Map<String, Double> env = new HashMap<>();
+        env.put("x", 4.9);
+
+        assertEquals("expected variable to be same", Expression.make(4.9), exp.simplify(env));
+    }
+
+    // simplify() : Plus, env contains 0 variables to be substituted
+    @Test
+    public void testPlusEnvContainZero() {
+        Expression exp = Expression.makePlus(Expression.make("x"), Expression.make("y"));
+        Map<String, Double> env = new HashMap<>();
+
+        assertEquals("expected same expression", exp, exp.simplify(env));
+    }
+
+    // simplify() : Plus, env contains 1 variables to be substituted
+    @Test
+    public void testPlusEnvContainOne() {
+        Expression exp = Expression.makePlus(Expression.make("x"), Expression.make("y"));
+        Map<String, Double> env = new HashMap<>();
+        env.put("y", 4.9);
+
+        assertEquals("expected value substitution", Expression.makePlus(Expression.make("x"), Expression.make(4.9)), exp.simplify(env));
+    }
+
+    // simplify() : Plus, env contains 2 variables to be substituted
+    @Test
+    public void testPlusEnvContainTwo() {
+        Expression exp = Expression.makePlus(Expression.make("x"), Expression.make("y"));
+        Map<String, Double> env = new HashMap<>();
+        env.put("x", 4.9);
+        env.put("y", 5.1);
+
+        assertEquals("expected evaluated expression", Expression.make(10), exp.simplify(env));
+    }
+
+    // simplify() : Multiply, env contains 0 variables to be substituted
+    @Test
+    public void testMultiplyEnvContainZero() {
+        Expression exp = Expression.makeMultiply(Expression.make("x"), Expression.make("y"));
+        Map<String, Double> env = new HashMap<>();
+
+        assertEquals("expected same expression", exp, exp.simplify(env));
+    }
+
+    // simplify() : Multiply, env contains 1 variable to be substituted
+    @Test
+    public void testMultiplyEnvContainOne() {
+        Expression exp = Expression.makeMultiply(Expression.make("x"), Expression.make("y"));
+        Map<String, Double> env = new HashMap<>();
+        env.put("y", 4.9);
+
+        assertEquals("expected value substitution", Expression.makeMultiply(Expression.make("x"), Expression.make(4.9)), exp.simplify(env));
+    }
+
+    // simplify() : Multiply, env contains 2 variables to be substituted
+    @Test
+    public void testMultiplyEnvContainTwo() {
+        Expression exp = Expression.makeMultiply(Expression.make("x"), Expression.make("y"));
+        Map<String, Double> env = new HashMap<>();
+        env.put("x", 4.0);
+        env.put("y", 5.0);
+
+        assertEquals("expected evaluated expression", Expression.make(20), exp.simplify(env));
     }
 }

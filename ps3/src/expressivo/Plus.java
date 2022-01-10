@@ -1,5 +1,7 @@
 package expressivo;
 
+import java.util.Map;
+
 public class Plus implements Expression {
     private final Expression left, right;
 
@@ -43,5 +45,19 @@ public class Plus implements Expression {
     @Override
     public Expression differentiate(String variable) {
         return new Plus(left.differentiate(variable), right.differentiate(variable));
+    }
+
+    @Override 
+    public Expression simplify(Map<String, Double> env) {
+        try {
+            return new Number(left.simplify(env).getValue() + right.simplify(env).getValue());
+        } catch (Exception e) {
+            return new Plus(left.simplify(env), right.simplify(env));
+        }
+    }
+
+    @Override
+    public double getValue() {
+        throw new UnsupportedOperationException();
     }
 }
